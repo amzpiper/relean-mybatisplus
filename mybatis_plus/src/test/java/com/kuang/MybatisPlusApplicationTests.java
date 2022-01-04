@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 @SpringBootTest
@@ -50,6 +52,71 @@ class MybatisPlusApplicationTests {
         int insert = userMapper.updateById(user);
         System.out.println(insert);
         System.out.println(user);
+    }
+
+    @Test
+    void contextLoads4() {
+        // 测试乐观锁成功！
+        // 1.查询用户信息
+        User user = userMapper.selectById(1);
+        // 2.修改
+        user.setName("123123");
+        // 3,执行更新，参数是一个对象
+        int updateById = userMapper.updateById(user);
+        System.out.println(updateById);
+        System.out.println(user);
+    }
+
+    @Test
+    void contextLoads5() {
+        // 测试乐观锁失败！
+        // 线程1
+        // 1.1.查询用户信息
+        User user = userMapper.selectById(1);
+        // 1.2.修改
+        user.setName("123123111111111");
+
+        // 线程2
+        // 2.1.查询用户信息
+        User user2 = userMapper.selectById(1);
+        // 2.2.修改
+        user2.setName("123123222222222");
+        // 2.3.执行更新第二个线程，插队了抢先线程1更新
+        userMapper.updateById(user2);
+
+        // 1.3.执行更新第一个线程的。如果没有乐观锁就会覆盖插队线程的数据。
+        // 实现自旋锁实现多次尝试! JUC课程
+        userMapper.updateById(user);
+    }
+
+    @Test
+    void contextLoads6() {
+        // 查询单个操作
+        User user = userMapper.selectById(1);
+        System.out.println(user);
+    }
+
+    @Test
+    void contextLoads7() {
+        // 查询多个操作
+        // SELECT id,name,age,email,version,create_time FROM user WHERE id IN ( ? , ? , ? )
+        List<User> users = userMapper.selectBatchIds(Arrays.asList(1, 2, 3));
+        users.forEach(System.out::println);
+    }
+
+    @Test
+    void contextLoads8() {
+        // 多条件查询map,复杂的会用mapper操作
+        // SELECT id,name,age,email,version,create_time FROM user WHERE name = ?
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("name", "Jack");
+        List<User> users = userMapper.selectByMap(map);
+    }
+
+    @Test
+    void contextLoads9() {
+        // 分页查询
+
     }
 
 }
