@@ -28,7 +28,7 @@ class MybatisPlusApplicationTests {
     @Test
     void contextLoads2() {
         User user = new User();
-        user.setName("测试");
+        user.setName("测试2");
         user.setAge(3);
         user.setEmail("15512702732@163.com");
         // 插入
