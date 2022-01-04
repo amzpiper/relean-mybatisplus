@@ -1,5 +1,7 @@
 package com.kuang;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kuang.mapper.UserMapper;
 import com.kuang.pojo.User;
 import org.junit.jupiter.api.Test;
@@ -115,8 +117,31 @@ class MybatisPlusApplicationTests {
 
     @Test
     void contextLoads9() {
-        // 分页查询
-
+        // 分页查询,参数1：当前页，参数2：页面大小
+        // SELECT id,name,age,email,version,create_time FROM user LIMIT 10,10
+        Page page = new Page(2,10);
+        IPage selectPage = userMapper.selectPage(page, null);
+        // 返回数据
+        selectPage.getRecords().forEach(System.out::println);
+        // 总数
+        System.out.println(selectPage.getTotal());
     }
 
+    @Test
+    void contextLoads10() {
+        // 删除操作,id删除
+        //userMapper.deleteById(1478278183120453634L);
+        // 批量删除,list
+        //userMapper.deleteBatchIds(Arrays.asList(1478268198860804099L,1478275780337917954L));
+        // 条件删除
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("name", "测试");
+        userMapper.deleteByMap(map);
+    }
+
+    @Test
+    void contextLoads11() {
+        // 逻辑删除,执行的是更新操作
+        userMapper.deleteById(1L);
+    }
 }
