@@ -25,4 +25,31 @@ class MybatisPlusApplicationTests {
         users.forEach(System.out::println);
     }
 
+    @Test
+    void contextLoads2() {
+        User user = new User();
+        user.setName("测试");
+        user.setAge(3);
+        user.setEmail("15512702732@163.com");
+        // 插入
+        int insert = userMapper.insert(user);
+        System.out.println(insert);
+        System.out.println(user);
+
+        // 帮我们自动生产了id，并且id会自动回填到user对象中。
+    }
+
+    @Test
+    void contextLoads3() {
+        User user = new User();
+        user.setId(1478268198860804099L);
+        user.setName("测试");
+        user.setAge(3);
+        user.setEmail("15512702732@163.com");
+        // 更新，参数是一个对象
+        int insert = userMapper.updateById(user);
+        System.out.println(insert);
+        System.out.println(user);
+    }
+
 }
